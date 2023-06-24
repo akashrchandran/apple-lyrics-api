@@ -1,6 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
-
+import parser from 'node-html-parser';
 dotenv.config();
 
 const {AUTH_BEARER, TOKEN} = process.env;
@@ -25,7 +25,11 @@ const HEADERS = {
 const getLrics = async () => {
     try {
         const song = await axios.get('https://amp-api.music.apple.com/v1/catalog/ph/songs/1691927418/lyrics', { headers: HEADERS })
-        console.log(song.data)
+        const html = parser.parse(song.data.data[0].attributes.ttml)
+        const lyrics = html.querySelectorAll('p')
+        lyrics.forEach((lyric) => {
+            console.log(lyric.text)
+        })
     }
     catch (error) {
         console.log(error)
