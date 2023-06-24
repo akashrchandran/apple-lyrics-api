@@ -49,11 +49,12 @@ const getLrics = async () => {
                     start: formatTime(lyric.getAttribute("begin")),
                     end: formatTime(lyric.getAttribute("end")),
                     words: lyric.text,
-                })).filter(({ words }) => words.trim() !== '');
+                })), synced;
     } catch (error) {
         console.log("Error getting lyrics");
-        return;
+        return [], synced;
     }
+    return [], synced;
 };
 
 

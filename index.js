@@ -8,8 +8,13 @@ app.use(express.json());
 
 
 app.get("/", async (req, res) => {
-    const lyrics = await apple.getLrics();
-    res.json(lyrics);
+    const {lyrics, synced}= await apple.getLrics();
+    console.log(synced);
+    res.json({
+        "error": false,
+        "syncType": "LINE_SYNCED",
+        "lines": lyrics,
+    });
 });
 
 app.listen(PORT, () => {
