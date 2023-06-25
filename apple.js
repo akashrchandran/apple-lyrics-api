@@ -22,6 +22,7 @@ const HEADERS = {
     l: "en-US",
 };
 
+
 const formatTime = (originaltime) => {
     let time = originaltime;
     if (time.includes(":")) {
@@ -34,28 +35,31 @@ const formatTime = (originaltime) => {
     return time;
 };
 
-const getLrics = async () => {
+const getLyrics = async (trackid) => {
     let synced = true;
     try {
-        const { data: { data: [{ attributes: { ttml } }] } } = await axios.get(
-            "https://amp-api.music.apple.com/v1/catalog/ph/songs/1691927418/lyrics",
+        const response = await axios.get(
+            `https://amp-api.music.apple.com/v1/catalog/ph/songs/${trackid}/lyrics`,
             { headers: HEADERS }
         );
+        const {ttml} = response.data.data[0].attributes;
         const html = parser.parse(ttml);
         if (html.toString().includes('itunes:timing="None"')) {
             synced = false;
         }
-        return Array.from(html.querySelectorAll("p"), (lyric) => ({
-                    start: formatTime(lyric.getAttribute("begin")),
-                    end: formatTime(lyric.getAttribute("end")),
-                    words: lyric.text,
-                })), synced;
+        const lyrics = Array.from(html.querySelectorAll("p"), (lyric) => ({
+            start: formatTime(lyric.getAttribute("begin")),
+            end: formatTime(lyric.getAttribute("end")),
+            words: lyric.text,
+        }));
+        console.log("Lyrics fetched");
+        return [lyrics, synced];
     } catch (error) {
         console.log("Error getting lyrics");
-        return [], synced;
+        return [[], synced];
     }
-    return [], synced;
 };
 
 
-export default { getLrics };
+
+export default { getLyrics };
