@@ -24,7 +24,7 @@ const HEADERS = {
 
 
 const formatTime = (originaltime) => {
-    let time = originaltime;
+    let time = originaltime.substring(0, originaltime.length - 1);
     if (time.includes(":")) {
         time = "0" + time;
     } else if (time < 10) {
